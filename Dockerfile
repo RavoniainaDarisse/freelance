@@ -1,22 +1,24 @@
-# Utiliser l'image officielle de .NET
+# Étape 1: Utilisation de l'image de base .NET SDK pour construire l'application
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /app
+
+# Copiez les fichiers .csproj et restaurez les dépendances
+COPY ["freelance/freelance.csproj", "freelance/"]
+RUN dotnet restore "freelance/freelance.csproj"
+
+# Copiez le reste du code source
+COPY . .
+
+# Construisez l'application en mode Release
+RUN dotnet publish "freelance.csproj" -c Release -o /app/publish
+
+# Étape 2: Utilisation de l'image de base ASP.NET pour l'exécution
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-# Utiliser l'image SDK pour la construction du projet
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
-COPY ["./freelance.csproj", "freelance/"]
-RUN dotnet restore "freelance/freelance.csproj"
-COPY . .
-WORKDIR "/src/freelance"
-RUN dotnet build "freelance.csproj" -c Release -o /app/build
+# Copiez les fichiers publiés depuis l'étape de build
+COPY --from=build /app/publish .
 
-FROM build AS publish
-RUN dotnet publish "freelance.csproj" -c Release -o /app/publish
-
-# Finaliser l'image avec les fichiers publiés
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
+# Commande pour démarrer l'application
 ENTRYPOINT ["dotnet", "freelance.dll"]
