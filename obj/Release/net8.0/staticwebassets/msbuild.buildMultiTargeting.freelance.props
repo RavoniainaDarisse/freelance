@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../build/freelance.props" />
+</Project>
