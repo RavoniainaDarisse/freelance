@@ -16,7 +16,7 @@ namespace freelance.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlite("Data Source=Data/mydatabase.db");
+                optionsBuilder.UseSqlite("Data Source=database.db");
             }
         }
 
