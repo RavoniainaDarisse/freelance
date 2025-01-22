@@ -2,9 +2,9 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
-# Copiez les fichiers .csproj et restaurez les dépendances
-COPY ["freelance/freelance.csproj", "freelance/"]
-RUN dotnet restore "freelance/freelance.csproj"
+# Copiez le fichier .csproj et restaurez les dépendances
+COPY ["freelance.csproj", "./"]
+RUN dotnet restore "freelance.csproj"
 
 # Copiez le reste du code source
 COPY . .
